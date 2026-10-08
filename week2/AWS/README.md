@@ -1,6 +1,4 @@
-## AWS
-
-# AWS
+# AWS Virtual Machine
 
 ## SSH Folder
 
@@ -56,7 +54,7 @@
 * Check the file permissions:
 
   * `ls -l tech613-nowres-aws-key.pem`
-* Confirm the key has read-only permissions.
+* Confirm the key has read-only permissions. It should start with `-r--`
 
 ## SSH Into the VM
 

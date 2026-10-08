@@ -5,6 +5,3 @@ Learning by week
   
 * [Week 2](week2/README.md)
 
-## Changes log
-
-* Add changes log
