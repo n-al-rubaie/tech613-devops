@@ -199,6 +199,63 @@ This is just a sentence so we can see what happens with changes.
 
 # Copying a Local Repository to GitHub
 
+
+# How to Sync Repositories and Connect Local Repo to GitHub
+
+## Initial Connection and First Push
+
+* First, check if a remote already exists:
+
+  * `git remote -v`
+
+## 1. Connect Your Local Repository to GitHub
+
+* Connect the local repository to GitHub:
+
+  * `git remote add origin https://github.com/n-al-rubaie/tech613-devops.git`
+
+* `git remote add` → adds a remote repository.
+
+* `origin` → the name given to the GitHub repository connection.
+
+* The URL → the location of your GitHub repository.
+
+### Only Do This If Needed
+
+* Rename the branch you are currently on to `main`:
+
+  * `git branch -M main`
+
+## 2. Push Your Local Main Branch to GitHub
+
+* Push the main branch to GitHub:
+
+  * `git push -u origin main`
+
+* `git push` → uploads your commits to GitHub.
+
+* `origin` → tells Git which remote repository to push to.
+
+* `main` → tells Git which branch to push.
+
+* `-u` → sets `origin main` as the upstream branch.
+
+* In future, you can usually just use:
+
+  * `git push`
+
+---
+
+# Once Connected
+
+* `git fetch` → check/download information about changes from GitHub.
+* `git pull` → download and apply changes from GitHub.
+* `git push` → upload your local commits to GitHub.
+* `git remote -v` → check the GitHub connection.
+* `git branch` → shows which branch you are currently on using *.
+
+
+
 ## HTTPS
 
 ### View Tracked Files
