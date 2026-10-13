@@ -390,5 +390,110 @@ This is just a sentence so we can see what happens with changes.
 
 
 
+# Git Branching & Ignoring Files (in PyCharm)
+
+## Open Integrated Git Bash Terminal
+
+```bash
+git status
+```
+
+## Create Git Repository
+
+```bash
+git init
+```
+
+## View Repository Status
+
+```bash
+git status
+```
+
+---
+
+## Create `.gitignore`
+
+Create a file called `.gitignore` in the project root:
+
+```gitignore
+.idea/
+.venv/
+__pycache__/
+*.pyc
+.env
+```
+
+Check ignored files:
+
+```bash
+git status
+```
+
+---
+
+## Rename Branch to Main
+
+```bash
+git branch -M main
+```
+
+---
+
+## Branching
+
+Create a branch:
+
+```bash
+git branch add-health-check
+```
+
+View branches:
+
+```bash
+git branch
+```
+
+Switch branches:
+
+```bash
+git switch add-health-check
+```
+
+Commit changes:
+
+```bash
+git add .
+git commit -m "add health check code"
+```
+
+---
+
+## Merge Branches
+
+Merge `add-health-check` into `main`:
+
+```bash
+git switch main
+git merge add-health-check
+```
+
+---
+
+## Check Merged Branches
+
+```bash
+git branch --merged
+```
+
+---
+
+## Delete a Branch
+
+```bash
+git branch -d add-health-check
+```
+
+---
 
 
