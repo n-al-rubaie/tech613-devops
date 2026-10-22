@@ -16,7 +16,9 @@ Links to topic learnt this week
 * [DevOps](<week 3/DevOps/README.md>)
 
 
-# Week 3
+# Week 4
 
 Links to topic learnt this week
-* [Cloud](week_4/README.md)
+* [Cloud](week_4/cloud/README.md)
+* [node.js deployment with AWS Ubuntu VM ](week_4/node.js_deployment_AWS_ubuntu/README.md)
+* [Bash automation script for provisioning and deploying a Node.js](week_4/scripts/provision-app.sh)
