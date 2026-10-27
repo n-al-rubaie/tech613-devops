@@ -53,9 +53,11 @@ This makes LTS versions useful for production environments.
 ### 5. Why Is Linux Good for Servers?
 
 - **Lightweight:** Linux distributions can run efficiently with relatively few system resources.
-- **Control over updates:** Administrators can generally control when package updates are installed.
+- **Control over updates:** Administrators can generally control when package updates are installed, making Linux stable. 
 - **Server support:** Linux is widely used for hosting websites and applications.
 - **Command-line tools:** Administrators can manage servers remotely using commands.
+- **Open Source:** Linux is free and open source.
+
 
 ### 6. What Is an SSH Key Pair?
 

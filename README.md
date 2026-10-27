@@ -21,4 +21,4 @@ Links to topic learnt this week
 Links to topic learnt this week
 * [Cloud](week_4/cloud/README.md)
 * [node.js deployment with AWS Ubuntu VM ](week_4/node.js_deployment_AWS_ubuntu/README.md)
-* [Bash automation script for provisioning and deploying a Node.js](week_4/scripts/provision-app.sh)
+* [Bash automation script for provisioning and deploying a Node.js](week_4/scripts/README.md)
