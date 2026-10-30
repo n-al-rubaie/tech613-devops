@@ -24,3 +24,16 @@ Pros = faster to deploy each thing individually, more robust and modular
 Cons = more complex
 
 
+
+
+
+
+## 3 Tier Deployment 
+3 Tiers = App Tier ,Database Tier and Presentation Tier
+
+
+## Microservices
+Pros = Individual services scaled, can isolate problems. 
+
+Cons = more complex
+
