@@ -42,6 +42,7 @@ Auto Scaling in AWS automatically creates or removes EC2 instances depending on 
 - Automatically adds or removes EC2 instances depending on demand (horizontal scaling).
 - Keeps the number of instances between the minimum (2) and maximum (3).
 - Replaces any instance that fails (self-healing).
+- Decides which availability zone an instance is in.
 
 ## 3. Load Balancer
 - Sits in front of your instances and is the single entry point for users.
@@ -141,9 +142,11 @@ Auto Scaling in AWS automatically creates or removes EC2 instances depending on 
 
 1. Open **Instance management**.
 2. Click any of the instances and paste its **public IP address** into your browser's URL bar (using `http`).
+
+   ![Instance public IP test](image-17.png)
 3. The tic-tac-toe app will appear.
 
-![Instance public IP test](image-17.png)
+   ![alt text](image-22.png)
 
 ## Test through the load balancer
 
@@ -161,6 +164,12 @@ If you have two instances and delete one (from **Instances**), another instance 
 
 ---
 
+The architecture is scalable because the Auto Scaling Group uses horizontal scaling to automatically increase or decrease the number of EC2 instances based on demand. This allows the application to handle higher traffic levels without manual intervention.
+
+---
+
+The architecture is highly available because it runs multiple EC2 instances behind an Application Load Balancer. If one instance fails, traffic is automatically redirected to healthy instances and the Auto Scaling Group launches a replacement instance, ensuring the application remains available to users.
+
 # Clean Up
 
 Delete resources in this order:
@@ -169,4 +178,3 @@ Delete resources in this order:
 2. **Load balancer**
 3. **Target group**
 
-> **Do not delete the launch template.**

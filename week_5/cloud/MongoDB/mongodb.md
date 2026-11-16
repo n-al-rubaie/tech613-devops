@@ -2,12 +2,17 @@
 
 ## Purpose
 
-This project deploys a Tic-Tac-Toe web app using a 2-tier architecture on AWS EC2:
+This project deploys a Tic-Tac-Toe web app using a     architecture on AWS EC2:
 
 - **App tier:** a Node.js app (managed with pm2) on one Ubuntu VM.
 - **Database tier:** MongoDB 7.0 on a separate Ubuntu VM, which stores the game data.
 
 The two VMs communicate over their private IPs on port 27017. Keeping the database on its own VM means each tier can be rebuilt, backed up or scaled independently.
+
+They can communicate over public IPs when both VMs have public IP addresses and their firewalls allow traffic on port 27017.
+
+- **Public IP:** Communication over the internet.
+- **Private IP:** Communication within the internal network.
 
 ## Why MongoDB?
 
@@ -68,7 +73,7 @@ curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
 
 ![alt text](image-3.png)
 
-## Resiger MongoDB
+## Register MongoDB
 
 Run the command below, it registers the MongoDB software repository with Ubuntu so MongoDB can be downloaded and installed using APT.
 
@@ -107,7 +112,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
 ## Check if MongoDB works
 
 ```bash
-Sudo systemctl status mongod
+sudo systemctl status mongod
 ```
 ![alt text](image-6.png)
 
