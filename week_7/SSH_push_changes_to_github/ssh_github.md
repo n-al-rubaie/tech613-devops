@@ -1,90 +1,127 @@
-# Using SSH to push changes to GitHub
+# Using SSH to Push Changes to GitHub
 
-1) Create SSH Key pair (RSA) (Consists of public/private key)
-2) Register padlock with public key (setting: any repo can be accessed)
-3) Add private key to SSH register
-4) Create test repo
-5) Push changes to test repo
+## Overview
 
-# Step 1: Create RSA key pair
+1. Create SSH Key pair (RSA) (Consists of public/private key)
+2. Register padlock with public key (setting: any repo can be accessed)
+3. Add private key to SSH register
+4. Create test repo
+5. Push changes to test repo
 
-In git bash terminal, go to .ssh folder:
+---
 
+# Step 1: Create RSA Key Pair
+
+In Git Bash terminal, go to the `.ssh` folder:
+
+```bash
 ssh-keygen -t rsa -b 4096 -C "yourownpersonalemail"
+```
 
+Name for key:
 
-name for key: firstname-github-key
+```text
+firstname-github-key
+```
 
-![alt text](image.png)
+![RSA Key Generation](image.png)
 
-# Step 2: Register padlock with public key on GitHub
+---
 
+# Step 2: Register Padlock with Public Key on GitHub
 
-Get your public key via bash:
+Get your public key via Bash:
 
-
+```bash
 cat nowres-github-key.pub
+```
 
-![alt text](image-1.png)
+![Public Key](image-1.png)
 
+Go to **GitHub → Settings → SSH and GPG keys**.
 
-Go to GitHub, settings, create a new SSH key, paste public key, click on Add SSH key. 
+Create a new SSH key, paste the public key, then click **Add SSH key**.
 
-![alt text](image-3.png)
+![Add SSH Key](image-3.png)
 
-# Step 3: Add private key to SSH register
-Start SSH Agent, add with backticks
+---
 
+# Step 3: Add Private Key to SSH Register
+
+Start SSH Agent, add with backticks:
+
+```bash
 eval `ssh-agent -s`
+```
 
-pid = process ID
-![alt text](image-4.png)
+**pid** = process ID
+
+![SSH Agent Started](image-4.png)
 
 Then run:
 
+```bash
 ssh-add nowres-github-key
-![alt text](image-5.png)
+```
 
+![SSH Add](image-5.png)
 
 Then run:
 
+```bash
 ssh -T git@github.com
-![alt text](image-6.png)
+```
 
+![SSH Connection Test](image-6.png)
 
-# Step 4: Create test repo
+---
 
-Create new repo, call it:
+# Step 4: Create Test Repo
 
+Create a new repository called:
+
+```text
 tech613-ssh-test
+```
 
+---
 
-# Step 5: Push changes to repo
+# Step 5: Push Changes to Repo
 
-Make new directory in bash in local gihub folder:
+Make a new directory in Bash in your local GitHub folder:
 
+```bash
 mkdir tech613-ssh-test
-
+```
 
 Then run:
 
+```bash
 git init
-
+```
 
 Then run:
 
+```bash
 git remote add origin git@github.com:n-al-rubaie/tech613-ssh-test.git
+```
 
-![alt text](image-7.png)
+![Git Remote](image-7.png)
 
+Create a new `.md` file with the title:
 
-Create new .md file with title "Hello"
-![alt text](image-8.png)
+```text
+Hello
+```
 
+![Create README](image-8.png)
 
+Then add, commit and push the project to GitHub.
 
-Then add, commit and push project to GitHub. 
+![Push to GitHub](image-9.png)
 
-![alt text](image-9.png)
+---
 
-The project has now succesfully been pushed using SSH. 
+# Result
+
+The project has now successfully been pushed using SSH.
