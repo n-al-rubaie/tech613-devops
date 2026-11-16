@@ -24,7 +24,9 @@ By the end of this project, code pushed to GitHub automatically triggers testing
 12. [Project Summary](#summary)
 
 
-# Creating Job
+# Creating a Job
+
+This job demonstrates how Jenkins can execute shell commands automatically. The purpose of this job is to retrieve and display the Linux version running on the Jenkins server.
 
 ## Job Details
 
@@ -45,6 +47,8 @@ Click **Build Now**.
 ---
 
 # Second Job
+
+This job retrieves the current system date and time. It is later linked to the first job to demonstrate basic Jenkins job orchestration.
 
 ## Job Details
 
@@ -69,6 +73,8 @@ Save and click **Build Now**.
 ---
 
 # Build CI/CD Pipeline
+
+In this section, Jenkins is connected to GitHub using SSH authentication. This allows Jenkins to securely clone repositories, run tests, and automate software delivery tasks.
 
 # Generate New Key Pair for Jenkins for SCM
 
@@ -340,6 +346,8 @@ The code from the `dev` branch should be merged into the `main` branch in GitHub
 
 # Continuous Deployment
 
+This section extends the pipeline by automatically deploying tested code to an AWS EC2 instance. Jenkins copies the application files, installs dependencies, and restarts the application.
+
 ## Copy Tested Code from Jenkins to AWS EC2 and Restart the App
 
 Create an EC2 instance for the Tic Tac Toe application and SSH into it.
@@ -584,7 +592,8 @@ You can drag and reorder the post-build actions if necessary.
 
 # Testing
 
-The following tests were performed to verify that the complete CI/CD pipeline functions correctly.
+The following tests verify that the complete CI/CD pipeline works correctly. Each test confirms that code changes move automatically from GitHub to Jenkins and then to the live AWS environment.
+
 
 The expected workflow is:
 
