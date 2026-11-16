@@ -1,3 +1,29 @@
+# Jenkins CI/CD Pipeline Project
+
+## Introduction
+
+This project demonstrates how to build a complete Continuous Integration and Continuous Deployment (CI/CD) pipeline using Jenkins, GitHub, and AWS EC2.
+
+The pipeline automates the software delivery process by testing code changes, merging approved code into the main branch, and deploying the application to a live server. Throughout this project, Jenkins is configured using multiple jobs that work together to create an automated deployment workflow for a Tic Tac Toe application.
+
+By the end of this project, code pushed to GitHub automatically triggers testing, deployment, and application updates on AWS.
+
+## Contents
+
+1. [Creating Job 1 - Linux Version](#creating-job)
+2. [Creating Job 2 - Date and Time](#second-job)
+3. [Building the CI/CD Pipeline](#build-cicd-pipeline)
+4. [Creating Jenkins SSH Credentials](#generate-new-key-pair-for-jenkins-for-scm)
+5. [Configuring GitHub Webhooks](#setting-up-webhook-github-repository--jenkins)
+6. [Testing Continuous Integration](#test-cicd-on-jenkins-with-ttt-app)
+7. [Creating Job 2 - Automatic Merge](#jenkins-pipeline-to-deploy-app)
+8. [Continuous Deployment to AWS EC2](#continuous-deployment)
+9. [Creating Job 3 - Deployment Job](#create-job-3)
+10. [Job Chaining](#chain-job-3-from-job-2)
+11. [Pipeline Testing](#testing)
+12. [Project Summary](#summary)
+
+
 # Creating Job
 
 ## Job Details
