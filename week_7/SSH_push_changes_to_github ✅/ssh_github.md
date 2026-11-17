@@ -1,16 +1,27 @@
 # Using SSH to Push Changes to GitHub
 
-## Overview
 
-1. Create SSH Key pair (RSA) (Consists of public/private key)
-2. Register padlock with public key (setting: any repo can be accessed)
-3. Add private key to SSH register
-4. Create test repo
-5. Push changes to test repo
+## Contents
 
----
+- [Using SSH to Push Changes to GitHub](#using-ssh-to-push-changes-to-github)
+  - [Contents](#contents)
+  - [Introduction](#introduction)
+- [Step 1: Create SSH Key pair (RSA) (Consists of public/private key)](#step-1-create-ssh-key-pair-rsa-consists-of-publicprivate-key)
+- [Step 2: Register Padlock with Public Key on GitHub](#step-2-register-padlock-with-public-key-on-github)
+- [Step 3: Add Private Key to SSH Register](#step-3-add-private-key-to-ssh-register)
+- [Step 4: Create Test Repo](#step-4-create-test-repo)
+- [Step 5: Push Changes to Repo](#step-5-push-changes-to-repo)
+- [Result](#result)
 
-# Step 1: Create RSA Key Pair
+
+## Introduction
+
+This guide demonstrates how to configure SSH authentication between a local machine and GitHub. Using SSH eliminates the need to repeatedly enter GitHub credentials when pushing code and provides a secure method of authenticating Git operations.
+
+The process involves creating an SSH key pair, registering the public key with GitHub, configuring the local SSH agent with the private key, and testing the connection by pushing code to a GitHub repository.
+
+
+# Step 1: Create SSH Key pair (RSA) (Consists of public/private key)
 
 In Git Bash terminal, go to the `.ssh` folder:
 

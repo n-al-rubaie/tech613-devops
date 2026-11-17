@@ -8,9 +8,48 @@ The pipeline automates the software delivery process by testing code changes, me
 
 By the end of this project, code pushed to GitHub automatically triggers testing, deployment, and application updates on AWS.
 
+## Instances Used in This Project
+
+This project uses **three EC2 instances**:
+
+**Note: Larger environments may have multiple Jenkins agents and separate development, testing, staging, and production servers.**
+
+1. **Jenkins Controller Instance**
+   - Hosts the Jenkins server
+   - Manages the CI/CD pipeline
+   - Receives GitHub webhooks
+   - Schedules and controls jobs
+
+2. **Jenkins Agent Instance**
+   - Acts as a worker node - a Jenkins agent that executes pipeline jobs such as testing, merging, and deployment. In this project, the worker node is a separate EC2 instance containing the tools and dependencies required to run the pipeline.
+   - Runs Jenkins jobs
+   - Executes testing, merging, and deployment tasks
+
+3. **Application EC2 Instance**
+   - Hosts the Tic Tac Toe application
+   - Receives deployed code from Jenkins
+   - Runs the application using PM2
+
+## Pipeline Architecture
+
+```text
+GitHub
+   ↓
+Jenkins Controller
+   ↓
+Jenkins Agent (Worker Node)
+   ├─ Job 1 (Test)
+   ├─ Job 2 (Merge)
+   └─ Job 3 (Deploy)
+   ↓
+Application EC2
+```
+
+> Although the pipeline contains three Jenkins jobs, they are not separate EC2 instances. Job 1, Job 2, and Job 3 run on the Jenkins Agent instance as part of the CI/CD pipeline.
+
 ## Contents
 
-1. [Creating Job 1 - Linux Version](#creating-job)
+1. [Creating Job 1 - Linux Version](#creating-a-job)
 2. [Creating Job 2 - Date and Time](#second-job)
 3. [Building the CI/CD Pipeline](#build-cicd-pipeline)
 4. [Creating Jenkins SSH Credentials](#generate-new-key-pair-for-jenkins-for-scm)
@@ -715,13 +754,13 @@ After Job 1, Job 2, and Job 3 complete successfully, verify the application runn
 
 The completed CI/CD pipeline now performs the following actions automatically:
 
-1. Developer pushes code to GitHub.
-2. GitHub webhook triggers Jenkins.
-3. **Job 1** performs automated testing.
-4. **Job 2** merges the `dev` branch into the `main` branch after successful tests.
-5. **Job 3** deploys the tested code to AWS EC2.
-6. The application is restarted using PM2.
-7. The updated application becomes available to users.
+1. Developer pushes code to GitHub
+2. GitHub webhook triggers Jenkins
+3. **Job 1** performs automated testing
+4. **Job 2** merges the `dev` branch into the `main` branch after successful tests
+5. **Job 3** deploys the tested code to AWS EC2
+6. The application is restarted using PM2
+7. The updated application becomes available to users
 
 Pipeline Flow:
 

@@ -1,4 +1,17 @@
-# Intro to Jenkins & CICD
+# Intro to Jenkins & CI/CD
+
+
+- [What is CD? Benefits?](#what-is-cd-benefits)
+- [What is Jenkins?](#what-is-jenkins)
+- [Why use Jenkins? Benefits of using Jenkins?](#why-use-jenkins-benefits-of-using-jenkins)
+- [Stages of Jenkins](#stages-of-jenkins)
+- [What alternatives are there for Jenkins](#what-alternatives-are-there-for-jenkins)
+- [Why build a pipeline? Business value?](#why-build-a-pipeline-business-value)
+- [Diagram - How a Git Push Triggers Jenkins via a Webhook](#diagram---how-a-git-push-triggers-jenkins-via-a-webhook)
+- [Diagram - CI/CD Pipeline: Test, Merge, and Deploy to AWS](#diagram---cicd-pipeline-test-merge-and-deploy-to-aws)
+- [Review](#review)
+- [CI/CD Pipeline](#cicd-pipeline)
+  
 
 ## What is CI? Benefits?
 
@@ -21,28 +34,28 @@
 
 Continuous Delivery (manual sign off/approval)
 
-* ensure software is always in a deployable state, ready/
+* Ensure software is always in a deployable state, ready/
 can be pushed production any time
-* often involves producing deployable artifact (artifact =  a file or package produced during the software build process that is ready to be deployed. E.g: Docker images, executable files, and ZIP packages)
-* requires a manual release decision
-* benefit:
-  * always have a deployable artifact ready to deploy to
+* Often involves producing deployable artifact (artifact =  a file or package produced during the software build process that is ready to be deployed. E.g: Docker images, executable files, and ZIP packages)
+* Requires a manual release decision
+* Benefit:
+  * Always have a deployable artifact ready to deploy to
   end users
 
 Continuous Deployment (automatically deploys code to production)
 
-* extends Continuous Delivery by automating the final
+* Extends Continuous Delivery by automating the final
 step of deploying to production
-* no manual intervention required
-* benefit which is also a disadvantage:
-  * removes the human approval, relys entired on
+* No manual intervention required
+* Benefit which is also a disadvantage:
+  * Removes the human approval, relys entired on
   automated processes
 
 ## What is Jenkins?
 
-* automation server
-* open-source
-* primary used for CICD, but can automate much more
+* Automation server
+* Open-source
+* Primary used for CICD, but can automate much more
 
 ## Why use Jenkins? Benefits of using Jenkins?
 Disadvantages?
@@ -84,10 +97,10 @@ A typical Jenkins CICD pipeline involves the following stages:
 
 ## Why build a pipeline? Business value?
 
-* cost savings - automating repetitive processes
-* faster time to market
-* reduced risk
-* improved quality through continuous feedback and
+* Cost savings - automating repetitive processes
+* Faster time to market
+* Reduced risk
+* Improved quality through continuous feedback and
 improvement
 
 
@@ -100,38 +113,42 @@ improvement
 
 ## Review
 
-1. **Webhook:** Automatically notifies Jenkins when code is pushed to GitHub, triggering the pipeline.
+1. **Webhook:** Automatically notifies Jenkins when code is pushed to GitHub, triggering the pipeline
+2.  **dev** branch (development branch) - new features and changes are tested before being added to the main branch. Jenkins tests code from the dev branch, then automatically merges it into the main branch if all tests pass
 
-2. **Why CI/CD?** Automates testing and deployment, saves time and reduces errors. Benefits developers, testers and clients.
+3. **Why CI/CD?** Automates testing and deployment, saves time and reduces errors. Benefits developers, testers and clients
 
-3. **Jobs:**
-   - Job 1: Tests code on dev.
-   - Job 2: Merges dev into main if tests pass.
-   - Job 3: Deploys code to EC2 if the merge succeeds.
 
-4. **Security:** Use SSH keys to securely connect Jenkins to GitHub and EC2. Store keys in Jenkins Credentials.
+4. **Jobs:**
+   - Job 1: Tests code on dev
+   - Job 2: Merges dev into main if tests pass
+   - Job 3: Deploys code to EC2 if the merge succeeds
+   
+
+4. **Security:** Use SSH keys to securely connect Jenkins to GitHub and EC2. Store keys in Jenkins Credentials
 
 
 ## CI/CD Pipeline 
 
-- **Git push:** Developer pushes code changes to GitHub.
-- **Webhook:** Automatically triggers Jenkins when code is pushed.
-- **Build queue:** Holds jobs waiting to be assigned.
-- **Master node:** Manages jobs and assigns them to worker nodes.
-- **Worker node:** Runs pipeline jobs. It is an EC2 instance with the required dependencies.
+- **Git push:** Developer pushes code changes to GitHub
+- **Webhook:** Automatically triggers Jenkins when code is pushed
+- **Build queue:** Holds jobs waiting to be assigned
+- **Master node:** Manages jobs and assigns them to worker nodes
+- **Worker node:** Runs pipeline jobs. It is an EC2 instance with the required dependencies
 
 ### Three Jenkins Jobs
 
-1. **Job 1:** Tests the code.
-2. **Job 2:** Merges dev into main if tests pass.
-3. **Job 3:** Deploys the updated code to the application.
+1. **Job 1:** Tests the code
+2. **Job 2:** Merges dev into main if tests pass
+3. **Job 3:** Deploys the updated code to the application
+
 
 ### Important Points
 
-- Each job only runs if the previous job succeeds.
-- Worker nodes can stay idle for 10–15 minutes before being terminated.
-- Keeping a worker node ready makes future pipelines faster.
-- The demonstration deployed updated code in under a minute (49.6 seconds).
-- Testing usually takes the longest.
+- Each job only runs if the previous job succeeds
+- Worker nodes can stay idle for 10–15 minutes before being terminated
+- Keeping a worker node ready makes future pipelines faster
+- The demonstration deployed updated code in under a minute (49.6 seconds)
+- Testing usually takes the longest
 
-**Main purpose:** Automate testing, merging and deployment so developers can deliver updates quickly and reliably.
+**Main purpose:** Automate testing, merging and deployment so developers can deliver updates quickly and reliably.  
