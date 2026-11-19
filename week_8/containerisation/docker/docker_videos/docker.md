@@ -56,6 +56,9 @@ docker run hello-world
 ![alt text](image-6.png)
 ![alt text](image-5.png)
 
+
+
+
 # Run ubuntu container and log in to it
 
 docker run -it ubuntu bash
@@ -150,12 +153,9 @@ docker stop <container_id>`
 Stops your container
 ![alt text](image-13.png)
 
+
 ## Remove container
-
-
-docker rm <container_id>
-
-![alt text](image-14.png)
+`docker rm <container_id>`
 
 ## Force remove a container
 
