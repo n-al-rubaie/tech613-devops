@@ -39,6 +39,29 @@ I contributed to the project across four files:
 - Implemented the `check_target()` function to execute TCP health checks using each target's configuration.
 - Returned the health-check results for the target.
 
+## Purpose of each .py file
+
+### 1. `config.py` – Loads and validates configuration
+
+- Reads the YAML configuration file.
+- Checks that the settings and required values are valid.
+
+### 2. `targets.yaml` – Stores server information
+
+- Lists the servers to check.
+- Stores their IP addresses, ports, health URLs, and default settings.
+
+### 3. `checks/tcp.py` – Checks server connections
+
+- Attempts to connect to each server using TCP.
+- Detects connection failures and measures connection time.
+
+### 4. `healthcheck.py` – Runs the health checks
+
+- Uses the target information and configuration.
+- Calls the TCP checker for each target.
+- Collects and returns the results.
+
 ## How to Run the Project
 
 ### 1. Clone the Repository
