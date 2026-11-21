@@ -1,0 +1,27 @@
+# Kubernetes API version
+apiVersion: v1
+
+# Resource type
+kind: Service
+
+metadata:
+  # Name of the Service
+  name: ttt-app-service
+
+spec:
+  # Expose the service on a port of each cluster node
+  type: NodePort
+
+  # Route traffic to pods with this label
+  selector:
+    app: ttt-app
+
+  ports:
+    # Service port configuration
+    - port: 3000
+
+      # Port on the container/pod
+      targetPort: 3000
+
+      # External port on the Kubernetes node
+      nodePort: 30001

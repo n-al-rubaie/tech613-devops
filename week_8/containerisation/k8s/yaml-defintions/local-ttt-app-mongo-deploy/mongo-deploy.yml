@@ -1,0 +1,37 @@
+# Kubernetes Deployment API version
+apiVersion: apps/v1
+
+# Resource type
+kind: Deployment
+
+metadata:
+  # Name of the MongoDB deployment
+  name: mongo-deployment
+
+spec:
+  # Run one MongoDB pod
+  replicas: 1
+
+  # Match pods with the label app: mongo
+  selector:
+    matchLabels:
+      app: mongo
+
+  # Pod template configuration
+  template:
+    metadata:
+      labels:
+        # Label assigned to the MongoDB pod
+        app: mongo
+
+    spec:
+      containers:
+        # MongoDB container configuration
+        - name: mongo
+
+          # Official MongoDB Docker image
+          image: mongo:7.0
+
+          ports:
+            # MongoDB listens on port 27017
+            - containerPort: 27017

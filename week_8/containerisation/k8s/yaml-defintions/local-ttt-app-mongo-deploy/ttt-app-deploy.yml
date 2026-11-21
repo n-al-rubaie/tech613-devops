@@ -1,0 +1,39 @@
+# Kubernetes Deployment API version
+apiVersion: apps/v1
+
+# Resource type
+kind: Deployment
+
+metadata:
+  # Name of the Deployment
+  name: ttt-app-deployment
+
+spec:
+  # Run 3 replicas (pods) of the application
+  replicas: 3
+
+  # Select pods with the label app: ttt-app
+  selector:
+    matchLabels:
+      app: ttt-app
+
+  # Pod template definition
+  template:
+    metadata:
+      labels:
+        # Label assigned to created pods
+        app: ttt-app
+
+    spec:
+      containers:
+        # Container configuration
+        - name: ttt-app
+
+          # Docker image to deploy
+          image: nalrubaie/tech613-tttapp:1.2.0
+
+          ports:
+            # Expose container port 3000
+            - containerPort: 3000
+
+

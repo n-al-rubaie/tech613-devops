@@ -2,6 +2,8 @@
 
 ## Introduction
 
+[View the tic tac toe app code here](https://github.com/n-al-rubaie/tech613-ttt-app-cicd-jenkins)
+
 This project demonstrates how to build a complete Continuous Integration and Continuous Deployment (CI/CD) pipeline using Jenkins, GitHub, and AWS EC2.
 
 The pipeline automates the software delivery process by testing code changes, merging approved code into the main branch, and deploying the application to a live server. Throughout this project, Jenkins is configured using multiple jobs that work together to create an automated deployment workflow for a Tic Tac Toe application.

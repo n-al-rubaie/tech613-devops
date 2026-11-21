@@ -1,0 +1,24 @@
+# Kubernetes API version
+apiVersion: v1
+
+# Resource type
+kind: Service
+
+metadata:
+  # Name of the MongoDB service
+  name: mongo-service
+
+spec:
+  # Internal service accessible within the cluster
+  type: ClusterIP
+
+  # Route traffic to the MongoDB pod
+  selector:
+    app: mongo
+
+  ports:
+    # Service port configuration
+    - port: 27017
+
+      # Port on the MongoDB container
+      targetPort: 27017

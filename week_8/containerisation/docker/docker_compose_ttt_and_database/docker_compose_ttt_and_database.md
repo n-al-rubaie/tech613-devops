@@ -281,6 +281,14 @@ What happened?
 6. The seed container populated the scoreboard with 10 records and exited.
 Database seeding is now automated using Docker Compose.
 
+![alt text](image-9.png)
+
+## View seeded data on bash
+
+`cat ../app/seeds/seedData.js`
+
+![alt text](image-10.png)
+
 ## Check current containers
 
 Run:
@@ -302,3 +310,341 @@ Run:
 > Exit code `0` means **Success**.
 >
 > The `seed` container is designed to stop after completing its task. It only runs the seeding process and does not need to remain running.
+
+
+## second automated seeding method.
+
+ MongoDB's `/docker-entrypoint-initdb.d` mechanism
+ MongoDB can automatically execute initialisation scripts when it initialises a fresh database volume.
+
+
+
+## Create MongoDB init directory and file
+
+
+In the `docker-compose-v1` directory run:
+
+`mkdir -p mongo-init`
+
+`touch mongo-init/init.js`
+
+- `mkdir -p mongo-init` → Creates a folder named `mongo-init`.
+- `touch mongo-init/init.js` → Creates an empty file named `init.js` inside that folder.
+-  `-p` → Creates the directory if it doesn't exist, and avoids an error if it already exists.
+- `touch` → Creates an empty file (or updates the file's timestamp if it already exists).
+
+![alt text](image-11.png)
+
+## Add code 
+
+Go into the init.js file, this can be done on bash using:
+
+`nano mongo-init/init.js`
+
+![alt text](image-13.png)
+
+Add in the code below and then save/exit out of nano.
+
+```
+// Connect to (or create) the 'tictactoe' database
+const db = db.getSiblingDB('tictactoe');
+
+// Create a timestamp to use for all records
+const now = new Date();
+
+// Insert 10 sample scoreboard entries into the collection
+db.scoreboard_entries.insertMany([
+    { initials: 'AAA', score: 100, createdAt: now, updatedAt: now },
+    { initials: 'BBB', score: 200, createdAt: now, updatedAt: now },
+    { initials: 'CCC', score: 300, createdAt: now, updatedAt: now },
+    { initials: 'DDD', score: 400, createdAt: now, updatedAt: now },
+    { initials: 'EEE', score: 500, createdAt: now, updatedAt: now },
+    { initials: 'FFF', score: 600, createdAt: now, updatedAt: now },
+    { initials: 'GGG', score: 700, createdAt: now, updatedAt: now },
+    { initials: 'HHH', score: 800, createdAt: now, updatedAt: now },
+    { initials: 'III', score: 900, createdAt: now, updatedAt: now },
+    { initials: 'JJJ', score: 1000, createdAt: now, updatedAt: now }
+]);
+
+// Print a success message after the records have been inserted
+print('MongoDB initialisation completed: 10 scoreboard records inserted.');
+```
+
+![alt text](image-12.png)
+
+## Create a separate Compose file for testing
+
+`touch docker-compose-init-test.yaml`
+
+- `touch` → Creates an empty file (or updates the file's timestamp if it already exists).
+
+![alt text](image-14.png)
+
+
+Why are we using a separate container?
+- The  existing MongoDB continues running on port 27017.
+- The test MongoDB uses port 27018.
+- It has its own volume, mongo-init-test-data.
+- The init.js file is mounted into MongoDB's initialisation directory.
+When MongoDB starts with an empty data directory, its official entrypoint automatically executes the JavaScript file.
+
+## Add in code to the docker-compose-init-test.yaml file
+
+The code below creates a MongoDB container using Docker, stores database data in a persistent volume, automatically runs database initialisation scripts, and checks that MongoDB is healthy and responding.
+
+```
+services:
+  # MongoDB container used for testing database initialisation
+  mongo-init-test:
+    # Use the official MongoDB 7.0 image
+    image: mongo:7.0
+
+    # Assign a custom container name
+    container_name: tech613-mongo-init-test
+
+    ports:
+      # Map host port 27018 to container port 27017
+      - "27018:27017"
+
+    volumes:
+      # Persist MongoDB data
+      - mongo-init-test-data:/data/db
+
+      # Mount init scripts as read-only
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      # Check MongoDB is responding
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+
+      # Run health check every 5 seconds
+      interval: 5s
+
+      # Fail check if it takes longer than 3 seconds
+      timeout: 3s
+
+      # Mark container unhealthy after 10 failures
+      retries: 10
+
+      # Wait 10 seconds before starting checks
+      start_period: 10s
+
+volumes:
+  # Named volume used to store MongoDB data persistently
+  mongo-init-test-data:
+```
+
+## Start the test MongoDB container
+
+`docker compose -f docker-compose-init-test.yaml up -d`
+
+
+## Verify that the second automation inserted all 10 records into MongoDB
+
+
+![alt text](image-15.png)
+
+
+Run:
+
+`docker exec -it tech613-mongo-init-test mongosh`
+
+Then run:
+
+###  Open the MongoDB Shell
+
+You should enter the MongoDB shell and see a prompt similar to:
+
+```shell
+test>
+```
+
+### Select the Database
+
+Type:
+
+```javascript
+use tictactoe
+```
+
+### Count the Records
+
+Type:
+
+```javascript
+db.scoreboard_entries.countDocuments()
+```
+
+**Expected result:** `10`
+
+###  Display All 10 Records
+
+Type:
+
+```javascript
+db.scoreboard_entries.find().sort({ score: 1 }).pretty()
+```
+
+You should see the 10 entries sorted by score, from **AAA (100)** to **JJJ (1000)**.
+
+![alt text](image-16.png)
+
+The second automated seeding method works.
+
+There are now two automated seeding methods:
+1. Docker Compose seed service: waits for the app to become healthy, then runs seeds/seed.js.
+2. MongoDB initialisation script: runs mongo-init/init.js automatically when MongoDB starts with a fresh, empty data volume.
+
+
+---
+
+## Separate the three seeding methods
+
+To organise the project, I created two separate directories:
+
+- `manual-seeding/` – contains the Docker Compose file for manual seeding.
+- `automatic-seeding/` – contains the Docker Compose files and MongoDB initialisation script for the two automated methods.
+
+The project structure is now:
+
+```text
+tech613-docker-run-ttt-app/
+│
+├── app/
+│
+├── manual-seeding/
+│   └── docker-compose.yaml
+│
+├── automatic-seeding/
+│   ├── docker-compose.yaml
+│   ├── docker-compose-init.yaml
+│   └── mongo-init/
+│       └── init.js
+│
+├── Dockerfile
+└── .dockerignore
+```
+
+### Run the three methods on separate ports
+
+Each method has its own application container and MongoDB container. This allows all three applications to run simultaneously without conflicting ports or sharing database volumes.
+
+| Method | Application port | MongoDB port |
+|---|---:|---:|
+| Manual seeding | 3000 | 27017 |
+| Automatic seeding using Docker Compose | 3001 | 27018 |
+| Automatic seeding using MongoDB `init.js` | 3002 | 27019 |
+
+### Start the manual seeding method
+
+From the project root directory, run:
+
+```bash
+docker compose -f manual-seeding/docker-compose.yaml up -d
+```
+
+This starts the MongoDB and application containers. The database can then be seeded manually using:
+
+```bash
+docker exec manual-tech613-app node seeds/seed.js
+```
+
+Access the application at:
+
+`http://localhost:3000`
+
+### Start the first automatic seeding method
+
+Run:
+
+```bash
+docker compose -p automatic-compose -f automatic-seeding/docker-compose.yaml up -d
+```
+
+The `-p automatic-compose` option assigns a separate Docker Compose project name.
+
+This configuration:
+
+1. Starts MongoDB.
+2. Waits for MongoDB to become healthy.
+3. Starts the application.
+4. Waits for the application to become healthy.
+5. Starts the seed service.
+6. Automatically inserts the 10 scoreboard records.
+
+The seed container exits after successfully completing the task.
+
+Access the application at:
+
+`http://localhost:3001`
+
+### Start the second automatic seeding method
+
+Run:
+
+```bash
+docker compose -p automatic-init -f automatic-seeding/docker-compose-init.yaml up -d
+```
+
+This starts a separate MongoDB container and application.
+
+The MongoDB container mounts the `mongo-init` directory into:
+
+`/docker-entrypoint-initdb.d`
+
+When MongoDB initialises a fresh, empty data volume, it automatically executes `init.js` and inserts the 10 scoreboard records.
+
+Access the application at:
+
+`http://localhost:3002`
+
+### Why use separate Docker Compose project names?
+
+Both automatic Compose files are inside the same directory. Docker Compose normally uses the directory name as the project name.
+
+Using separate project names prevents the two configurations from interfering with each other:
+
+- `automatic-compose` – first automated method.
+- `automatic-init` – second automated method.
+
+### Check all running containers
+
+Run:
+
+```bash
+docker ps
+```
+
+This displays the running containers, their status and their port mappings.
+
+### Access all three applications
+
+| Seeding method | Application URL |
+|---|---|
+| Manual | `http://localhost:3000` |
+| Automatic Compose seeding | `http://localhost:3001` |
+| Automatic MongoDB initialisation | `http://localhost:3002` |
+
+All three applications were successfully started and tested. Each application was accessible through its own port, and each database contained 10 seeded scoreboard records.
+
+### Stop all three methods
+
+To stop the containers while preserving the database volumes and stored data, run:
+
+```bash
+docker compose -f manual-seeding/docker-compose.yaml down
+
+docker compose -p automatic-compose -f automatic-seeding/docker-compose.yaml down
+
+docker compose -p automatic-init -f automatic-seeding/docker-compose-init.yaml down
+```
+
+The `down` command removes the containers and networks but preserves the named volumes unless the `-v` option is added.
+
+
+
+![alt text](image-17.png)
+
+![alt text](image-18.png)
+
+![alt text](image-19.png)
