@@ -1,5 +1,9 @@
 # Creating an AWS Security Group and Attaching it to an EC2 Instance using Terraform 
 
+## Source Code 
+
+- [View source code](https://github.com/n-al-rubaie/tech613-terraform)
+
 ## Task Requirements
 
 - Create an AWS Security Group named `tech613-nowres-tf-allow-port-22-3000-80`
