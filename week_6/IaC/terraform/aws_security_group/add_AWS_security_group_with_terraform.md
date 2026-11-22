@@ -2,7 +2,7 @@
 
 ## Source Code 
 
-- [View source code](https://github.com/n-al-rubaie/tech613-terraform)
+- [View terraform project repo](https://github.com/n-al-rubaie/tech613-terraform)
 
 ## Task Requirements
 
