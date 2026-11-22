@@ -1,4 +1,4 @@
-# The Sparta AI Huddle Hackathon - 11 November 2026 - London
+# The Sparta AI Huddle Hackathon - 11th November 2026 - London
 
 ## Overview
 
