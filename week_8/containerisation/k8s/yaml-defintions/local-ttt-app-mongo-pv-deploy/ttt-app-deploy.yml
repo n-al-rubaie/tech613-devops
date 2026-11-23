@@ -1,0 +1,48 @@
+# Kubernetes Deployment API version
+apiVersion: apps/v1
+
+# Resource type
+kind: Deployment
+
+# Deployment metadata
+metadata:
+  # Name of the deployment
+  name: ttt-app-deployment
+
+# Deployment specification
+spec:
+  # Number of application pod replicas to run
+  replicas: 3
+
+  # Selector used to identify pods managed by this deployment
+  selector:
+    matchLabels:
+      app: ttt-app
+
+  # Template used to create new pods
+  template:
+    metadata:
+      # Labels assigned to the pods
+      labels:
+        app: ttt-app
+
+    spec:
+      # List of containers running inside the pod
+      containers:
+        # Application container configuration
+        - name: ttt-app
+
+          # Docker image to deploy
+          image: nalrubaie/tech613-tttapp:1.2.0
+
+          # Container port exposed by the application
+          ports:
+            - containerPort: 3000
+
+          # MongoDB connection configuration
+          env:
+            # Environment variable for the MongoDB connection string
+            - name: MONGODB_URI
+
+              # MongoDB service address and database name
+              value: "mongodb://mongo-service:27017/tictactoe"

@@ -282,3 +282,18 @@
 - Evaluating Whether Kubernetes Is Needed
 - Assessing Whether There Is Enough Internal Expertise
 - Abstracting the Complexity of Kubernetes Away from Developers
+
+
+## Types of autoscaling with K8s
+* Horizontal Pod Autoscaler (HPA)
+  * Purpose: Auto scale the number of pods in a deployment, replicaset or stateset based on observed CPU or memory usage or custom metrics
+  * Configuration: Using K8s resource definition
+* Cluster Autoscaler:
+  * Purpose: Auto adjustment of size of the K8s cluster (number of nodes) based on pending pods & usage
+  * Configuration: Generally configured at the cluster level
+* Vertical Pod Autoscaler (VPA)
+  * Purpose: Auto adjument of the limits of containers in pods
+  * Configured: Using K8s resource definition
+* KEDA (K8s Event-driven Autoscaling)
+  * Purpose: Provide more fine-grained autoscaling based on a variety of event sources (beyond CPU/memory) like custom metrics, external metrics & event source such as message queues
+  * Configuration: Integrates with HPA & additional setup

@@ -1,0 +1,56 @@
+# Kubernetes Deployment API version
+apiVersion: apps/v1
+
+# Resource type
+kind: Deployment
+
+metadata:
+  # Name of the MongoDB deployment
+  name: mongo-deployment
+
+spec:
+  # Run one MongoDB pod
+  replicas: 1
+
+  # Match pods with the label app: mongo
+  selector:
+    matchLabels:
+      app: mongo
+
+  # Pod template configuration
+  template:
+    metadata:
+      # Labels assigned to the pod
+      labels:
+        app: mongo
+
+    spec:
+      containers:
+        # MongoDB container configuration
+        - name: mongo
+
+          # Use MongoDB version 7.0 image
+          image: mongo:7.0
+
+          ports:
+            # Expose MongoDB default port inside the container
+            - containerPort: 27017
+
+          # Connect persistent storage to MongoDB
+          volumeMounts:
+            # Reference the volume defined below
+            - name: mongo-storage
+
+              # Mount path where MongoDB stores database files
+              mountPath: /data/db
+
+      # Define the storage used by the pod
+      volumes:
+        # Name of the volume available to the container
+        - name: mongo-storage
+
+          # Use an existing PersistentVolumeClaim
+          persistentVolumeClaim:
+
+            # PVC that provides persistent storage for MongoDB
+            claimName: mongo-pvc

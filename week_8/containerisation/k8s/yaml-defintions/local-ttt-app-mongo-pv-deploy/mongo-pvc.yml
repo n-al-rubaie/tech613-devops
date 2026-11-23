@@ -1,0 +1,26 @@
+# PersistentVolumeClaim API version
+apiVersion: v1
+
+# Resource type
+kind: PersistentVolumeClaim
+
+# PVC metadata
+metadata:
+  # Name of the Persistent Volume Claim
+  name: mongo-pvc
+
+# PVC specification
+spec:
+  # Defines how the volume can be mounted
+  accessModes:
+    # Volume can be mounted as read-write by a single node
+    - ReadWriteOnce
+
+  # Storage resource requirements
+  resources:
+    requests:
+      # Request 1 GiB of storage
+      storage: 1Gi
+
+  # StorageClass used to dynamically provision the volume
+  storageClassName: hostpath
