@@ -3,6 +3,9 @@
 ![alt text](image.png)
 
 
+![alt text](image-1.png)
+
+![alt text](image-2.png)
 
 # Kubernetes
 
@@ -93,7 +96,6 @@
 
 * Kubernetes architecture
 
-  Built from what the trainer described, not his on-screen diagram:
 
   ```mermaid
   flowchart LR

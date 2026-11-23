@@ -216,4 +216,173 @@ An internal Kubernetes address shall be provided:
 
 The application pods will use this address to communicate with MongoDB.
 
-Next step: 3. Update the application Deployment
+## Update the application Deployment to connect to MongoDB
+
+Add code below to: `ttt-app-deploy.yml` in the `local-ttt-app-mongo-deploy` folder. 
+
+
+```
+# Kubernetes Deployment API version
+apiVersion: apps/v1
+
+# Resource type
+kind: Deployment
+
+# Deployment metadata
+metadata:
+  # Name of the deployment
+  name: ttt-app-deployment
+
+# Deployment specification
+spec:
+  # Number of application pod replicas to run
+  replicas: 3
+
+  # Selector used to identify pods managed by this deployment
+  selector:
+    matchLabels:
+      app: ttt-app
+
+  # Template used to create new pods
+  template:
+    metadata:
+      # Labels assigned to the pods
+      labels:
+        app: ttt-app
+
+    spec:
+      # List of containers running inside the pod
+      containers:
+        # Application container configuration
+        - name: ttt-app
+
+          # Docker image to deploy
+          image: nalrubaie/tech613-tttapp:1.2.0
+
+          # Container port exposed by the application
+          ports:
+            - containerPort: 3000
+
+          # MongoDB connection configuration
+          env:
+            # Environment variable for the MongoDB connection string
+            - name: MONGODB_URI
+
+              # MongoDB service address and database name
+              value: "mongodb://mongo-service:27017/tictactoe"
+```
+
+## Deploy all four Kubernetes resources
+
+Run in bash in the `local-ttt-app-mongo-deploy` folder:
+
+`kubectl apply -f`
+
+
+
+![alt text](image-5.png)
+
+Kubernetes reads all four YAML files in the folder and creates or updates:
+
+1. `ttt-app-deployment` - Runs three replicas of the Node.js application
+2. `ttt-app-service` - Exposes the application through NodePort `30001`
+3. `mongo-deployment` - Runs one MongoDB replica
+4. `mongo-service` - Provides internal access to MongoDB on port `27017`
+
+### What does `-f .` mean?
+
+- `-f` tells Kubernetes to use YAML configuration files
+- `.` means the current directory
+- Kubernetes will apply all YAML files in the current folder
+
+This will deploy:
+
+- 3 Node.js application replicas
+- 1 MongoDB replica
+- 1 NodePort Service
+- 1 ClusterIP Service
+
+## Check the deployments
+
+`kubectl get deployments`
+
+![alt text](image-6.png)
+
+## Check the pods
+
+`kubectl get pods`
+
+![alt text](image-7.png)
+
+## Check the services
+
+`kubectl get services`
+
+![alt text](image-8.png)
+
+
+## Display a summary of the main Kubernetes resources in the current namespace
+
+`kubectl get all`
+
+
+### What does it display?
+
+| Resource | What it shows |
+|----------|---------------|
+| Pods | Running application containers |
+| Services | Network access to your applications |
+| Deployments | Desired and available replicas |
+| ReplicaSets | Manage the number of pod replicas |
+
+![alt text](image-11.png)
+
+
+## Test the ttt app (global version connected with MongoDB)
+
+Run in url:
+
+`http://localhost:30001/`
+
+![alt text](image-9.png)
+
+## Verify the MongoDB connection
+
+`kubectl logs deployment/ttt-app-deployment`
+
+
+
+![alt text](image-10.png)
+
+## Results: MongoDB Connection
+
+The most important log entry is:
+
+```json
+{
+  "code": "MDB_001",
+  "message": "Mongo connection established",
+  "mode": "Persistent with Mongo DB",
+  "mongoTarget": "mongo-service:27017/tictactoe"
+}
+```
+
+This confirms:
+
+1. **MongoDB connection established:** The application successfully connected to the database.
+2. **Persistent with Mongo DB:** The application is operating in database-backed mode.
+3. **mongo-service:** Kubernetes successfully resolved the internal MongoDB Service.
+4. **27017:** The correct MongoDB port.
+5. **tictactoe:** The database being used.
+
+We also have:
+
+```json
+{
+  "code": "REQ_200",
+  "message": "Request completed",
+  "statusCode": 200
+}
+```
+
+This confirms that the application successfully handled HTTP requests, including the scoreboard API request.
