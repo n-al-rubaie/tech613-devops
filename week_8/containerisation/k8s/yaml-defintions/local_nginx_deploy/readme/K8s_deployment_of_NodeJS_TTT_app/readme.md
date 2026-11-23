@@ -1,5 +1,16 @@
 # K8s deployment of NodeJS TTT app
 
+![alt text](architecture-diagram-updated.png)
+
+## How the Deployment Works
+
+1. **User:** Opens the Tic-Tac-Toe application through `localhost:30001`.
+2. **NodePort Service:** `ttt-app-service` receives external traffic on port `30001` and forwards it to port `3000`.
+3. **Application Deployment:** Kubernetes distributes requests between the three Node.js application pods.
+4. **MongoDB Service:** Each application pod connects to MongoDB using `mongo-service:27017`.
+5. **MongoDB Pod:** Receives database requests and accesses the `tictactoe` database.
+
+
  ## Confirmed Application Configuration
 
 | Setting | Value |

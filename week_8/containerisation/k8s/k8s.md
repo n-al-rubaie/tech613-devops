@@ -259,7 +259,9 @@
     * Maintainer could be an organisation, a community or an individual e.g. Ubuntu images maintained by Canonical
     * Designed to provide a reliable, secure, up-to-date foundations for building and running applications
   * Pros and cons of using maintained images for your base container images
-  * 
+  * Pros: Security patches handled for you, less maintenance, built-in best practices, signed provenance, consistency across teams.
+  * Cons: Dependence on the maintainer, licensing or access changes, floating tags that can break builds, bloat and CVE noise, limited customisation
+
 
 ---
 
