@@ -276,7 +276,7 @@ spec:
 
 Run in bash in the `local-ttt-app-mongo-deploy` folder:
 
-`kubectl apply -f`
+`kubectl apply -f .`
 
 
 
@@ -676,3 +676,366 @@ Because the PV has a Delete reclaim policy, Kubernetes should automatically dele
 
 ![alt text](image-33.png)
 
+# Using Horizontal Pod Autoscaler (HPA) to scale the app
+
+HPA automatically:
+- Scales up: Increases the number of pods when CPU utilisation is too high.
+- Scales down: Decreases the number of pods when CPU utilisation falls.
+
+The benefit is:
+- High demand: Kubernetes creates more pods to handle traffic.
+- Low demand: Kubernetes reduces the number of pods.
+- Less manual work: You don't need to adjust replica numbers yourself.
+- Resource efficiency: You avoid running unnecessary application pods.
+  
+HPA doesn't measure how many users are accessing the application directly.
+It uses resource metrics, such as CPU utilisation, to decide whether more pods are needed.
+
+
+## Scaling Configuration
+
+| Setting | Requirement |
+|----------|-------------|
+| Minimum replicas | 2 |
+| Maximum replicas | 10 |
+| What scales? | Tic-Tac-Toe application only |
+| What triggers scaling? | CPU utilisation |
+| How do we test? | Apache Bench (`ab`) |
+
+
+## Install Metrics Server 
+
+The Horizontal Pod Autoscaler (HPA) needs Metrics Server to read the CPU usage of your application pods. We need to install it before configuring the HPA.
+
+`kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml`
+
+![alt text](image-34.png)
+
+## Check whether Metrics Server is running
+
+`kubectl get pods -n kube-system`
+
+
+![alt text](image-36.png)
+
+
+## Verify CPU metrics
+
+`kubectl top nodes`
+
+![alt text](image-37.png)
+
+Metrics Server is now collecting resource usage successfully:
+- Node: docker-desktop
+- CPU usage: 1027m (6%)
+- Memory usage: 2459Mi (15%)
+
+## Update ttt-app-deploy.yml
+
+We'll use:
+- CPU request: 100m (0.1 CPU core)
+- Memory request: 128Mi
+- CPU limit: 500m (0.5 CPU core)
+- Memory limit: 256Mi
+
+The HPA will target 10% CPU utilisation. With a 100m CPU request, that means it aims for approximately 10m CPU usage per pod.
+
+Open the code for `ttt-app-deploy.yml`, and replace it with:
+
+```
+# Kubernetes Deployment API version
+apiVersion: apps/v1
+
+# Resource type
+kind: Deployment
+
+# Deployment metadata
+metadata:
+  # Name of the deployment
+  name: ttt-app-deployment
+
+# Deployment specification
+spec:
+  # Number of application pod replicas to run
+  replicas: 3
+
+  # Selector used to identify pods managed by this deployment
+  selector:
+    matchLabels:
+      app: ttt-app
+
+  # Template used to create new pods
+  template:
+    metadata:
+      # Labels assigned to the pods
+      labels:
+        app: ttt-app
+
+    spec:
+      # List of containers running inside the pod
+      containers:
+        # Application container configuration
+        - name: ttt-app
+
+          # Docker image to deploy
+          image: nalrubaie/tech613-tttapp:1.2.0
+
+          # Container port exposed by the application
+          ports:
+            - containerPort: 3000
+
+          # CPU and memory resource requirements
+          resources:
+            requests:
+              # Reserve 100 millicores of CPU for the container
+              cpu: "100m"
+
+              # Reserve 128 MiB of memory for the container
+              memory: "128Mi"
+
+            limits:
+              # Maximum CPU the container can use
+              cpu: "500m"
+
+              # Maximum memory the container can use
+              memory: "256Mi"
+
+          # MongoDB connection configuration
+          env:
+            # Environment variable for the MongoDB connection string
+            - name: MONGODB_URI
+
+              # MongoDB service address and database name
+              value: "mongodb://mongo-service:27017/tictactoe"
+```
+
+
+The yml file has been updated with the resources section, this defines the minimum CPU and memory requested by each pod and the maximum it can use. HPA needs to calculate CPU utilisation.
+
+## Apply the updated Deployment
+
+`kubectl apply -f ttt-app-deploy.yml`
+
+![alt text](image-38.png)
+
+Kubernetes has detected the changes and configured the Deployment with the new CPU and memory requests and limits.
+
+## Check the Deployment rollout
+
+This checks that the application pods have successfully restarted with the updated configuration.
+
+`kubectl rollout status deployment/ttt-app-deployment`
+
+![alt text](image-39.png)
+
+## Verify CPU metrics
+
+`kubectl top pods`
+
+![alt text](image-40.png)
+
+The metrics are working, and all three application pods are reporting CPU and memory usage.
+
+The current readings are:
+- CPU: 0m (very low usage while idle)
+- Memory: 9Mi per pod
+- Pods: 3 running
+
+## Create the HPA configuration
+
+A Horizontal Pod Autoscaler will be made that:
+- Targets ttt-app-deployment
+- Maintains a minimum of 2 replicas
+- Allows a maximum of 10 replicas
+- Targets average CPU utilisation of 10%
+  
+In the `local-ttt-app-mongo-pv-deploy` folder, create a new file called:
+
+`ttt-app-hpa.yml`
+
+Add in the `ttt-app-hpa.yml` file the code below:
+
+```
+# Horizontal Pod Autoscaler API version
+apiVersion: autoscaling/v2
+
+# Resource type
+kind: HorizontalPodAutoscaler
+
+# HPA metadata
+metadata:
+  # Name of the autoscaler
+  name: ttt-app-hpa
+
+# HPA specification
+spec:
+  # Target deployment that will be scaled automatically
+  scaleTargetRef:
+    # API version of the target resource
+    apiVersion: apps/v1
+
+    # Resource type to scale
+    kind: Deployment
+
+    # Name of the deployment to scale
+    name: ttt-app-deployment
+
+  # Minimum number of pod replicas to maintain
+  minReplicas: 2
+
+  # Maximum number of pod replicas allowed
+  maxReplicas: 10
+
+  # Metrics used to determine when scaling should occur
+  metrics:
+    # Use a resource metric for scaling
+    - type: Resource
+
+      resource:
+        # Monitor CPU utilisation
+        name: cpu
+
+        target:
+          # Scale based on average CPU utilisation across pods
+          type: Utilization
+
+          # Target CPU utilisation percentage
+          # If average CPU usage exceeds 10%, Kubernetes can add more pods
+          averageUtilization: 10
+
+```
+
+### What does 10% mean?
+
+The CPU request is 100m per pod. Therefore, the HPA aims to keep average CPU usage around 10m per pod.
+
+A 10% target makes the HPA more sensitive to increases in CPU usage than a 50% target.
+
+## Apply the HPA configuration
+
+`kubectl apply -f ttt-app-hpa.yml`
+
+![alt text](image-41.png)
+
+## Check the HPA status
+
+`kubectl get hpa`
+
+This displays:
+- TARGETS: Current CPU utilisation compared with the 10% target.
+- MINPODS: Minimum of 2 replicas.
+- MAXPODS: Maximum of 10 replicas.
+- REPLICAS: Current number of application pods.
+
+![alt text](image-42.png)
+
+HPA created successfully
+
+| Setting | Current value |
+|----------|----------|
+| Deployment | `ttt-app-deployment` |
+| CPU target | 10% |
+| Minimum replicas | 2 |
+| Maximum replicas | 10 |
+| Current replicas | 3 |
+| Current CPU utilisation | 0% |
+
+## Check Apache Bench availability
+
+ Apache Bench (ab) shall be used to generate HTTP traffic and test whether the HPA increases the number of pods.
+
+ With Docker Desktop installed, Apache Bench can be run inside a temporary Docker container instead of installing Apache Bench permanently on Windows.
+
+ `docker run --rm alpine:3.20 sh -c "apk add --no-cache apache2-utils && ab -V"`
+
+ This will:
+1. Download a lightweight Alpine Linux image if needed
+2. Install Apache Bench inside the container
+3. Display its version
+4. Automatically remove the container afterwards
+
+ ![alt text](image-43.png)
+
+## Monitor the HPA
+
+Open a **second PowerShell window**. Keep the original PowerShell window open for the load test.
+
+`kubectl get hpa ttt-app-hpa --watch`
+
+This continuously displays the HPA status. We'll watch the CPU utilisation and replica count change as traffic increases.
+
+![alt text](image-44.png)
+
+## Generate traffic using Apache Bench
+
+Go back to the first PowerShell window (the one in local-ttt-app-mongo-pv-deploy).
+
+`docker run --rm alpine:3.20 sh -c "apk add --no-cache apache2-utils && ab -n 20000 -c 100 -s 120 http://host.docker.internal:30001/"`
+
+| Option | Meaning |
+|----------|---------|
+| `-n 20000` | Send 20,000 requests |
+| `-c 100` | Send up to 100 requests concurrently |
+| `-s 120` | Allow up to 120 seconds for an individual request |
+| `host.docker.internal:30001` | Access your application through its NodePort |
+
+
+
+![alt text](image-45.png)
+![alt text](image-46.png)
+
+**Apache Bench results:**
+
+| Metric | Result |
+|---------|---------|
+| Total requests | 20,000 |
+| Concurrency | 100 |
+| Failed requests | 0 |
+| Requests per second | 47.03 |
+| Time taken | 425.250 seconds |
+
+
+
+The load test completed **20,000 requests** with a concurrency level of **100 users** and **zero failed requests**. The application processed approximately **47 requests per second** and completed the test in **425.250 seconds**.
+
+# HPA Scaling results
+
+Open the second powershell window where the load test is running.
+
+The HPA detected increased CPU utilisation and automatically increased the application replicas:
+
+
+
+| CPU Utilisation | Number of Replicas |
+|----------------|--------------------|
+| 0%             | 2                  |
+| 93%            | 2                  |
+| 7%             | 4                  |
+| 0%             | 8                  |
+| 0%             | 10                 |
+| 0%             | 10                 |
+| 0%             | 3                  |
+| 0%             | 2                  |
+
+
+
+
+![alt text](image-48.png)
+
+The application successfully scaled from **2** to **10 replicas**, reaching the configured maximum.
+
+
+## Verify the deployments, pods and HPA
+
+`kubectl get deployments,pods,hpa`
+
+![alt text](image-47.png)
+
+Result: The HPA successfully scaled the application up to its maximum of 10 replicas during the load test. Once CPU utilisation decreased, it automatically scaled back down to its minimum of 2 replicas. MongoDB remained at 0 replicas and was not scaled by the HPA.
+
+
+## Note: HPA and replica management
+
+The Deployment YAML initially specifies `replicas: 3`. However, once the Horizontal Pod Autoscaler (HPA) is configured, it manages the number of application replicas automatically, scaling between the minimum of 2 and maximum of 10.
+
+When using HPA, it is recommended to remove the `replicas` field from the Deployment YAML. This prevents a future `kubectl apply` from overriding the replica count managed by the HPA.

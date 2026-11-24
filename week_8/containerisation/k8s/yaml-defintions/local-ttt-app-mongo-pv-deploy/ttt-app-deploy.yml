@@ -39,6 +39,22 @@ spec:
           ports:
             - containerPort: 3000
 
+          # CPU and memory resource requirements
+          resources:
+            requests:
+              # Reserve 100 millicores of CPU for the container
+              cpu: "100m"
+
+              # Reserve 128 MiB of memory for the container
+              memory: "128Mi"
+
+            limits:
+              # Maximum CPU the container can use
+              cpu: "500m"
+
+              # Maximum memory the container can use
+              memory: "256Mi"
+
           # MongoDB connection configuration
           env:
             # Environment variable for the MongoDB connection string

@@ -4,36 +4,61 @@ apiVersion: apps/v1
 # Resource type
 kind: Deployment
 
+# Deployment metadata
 metadata:
-  # Name of the Deployment
+  # Name of the deployment
   name: ttt-app-deployment
 
+# Deployment specification
 spec:
-  # Run 3 replicas (pods) of the application
+  # Number of application pod replicas to run
   replicas: 3
 
-  # Select pods with the label app: ttt-app
+  # Selector used to identify pods managed by this deployment
   selector:
     matchLabels:
       app: ttt-app
 
-  # Pod template definition
+  # Template used to create new pods
   template:
     metadata:
+      # Labels assigned to the pods
       labels:
-        # Label assigned to created pods
         app: ttt-app
 
     spec:
+      # List of containers running inside the pod
       containers:
-        # Container configuration
+        # Application container configuration
         - name: ttt-app
 
           # Docker image to deploy
           image: nalrubaie/tech613-tttapp:1.2.0
 
+          # Container port exposed by the application
           ports:
-            # Expose container port 3000
             - containerPort: 3000
 
+          # CPU and memory resource requirements
+          resources:
+            requests:
+              # Reserve 100 millicores of CPU for the container
+              cpu: "100m"
 
+              # Reserve 128 MiB of memory for the container
+              memory: "128Mi"
+
+            limits:
+              # Maximum CPU the container can use
+              cpu: "500m"
+
+              # Maximum memory the container can use
+              memory: "256Mi"
+
+          # MongoDB connection configuration
+          env:
+            # Environment variable for the MongoDB connection string
+            - name: MONGODB_URI
+
+              # MongoDB service address and database name
+              value: "mongodb://mongo-service:27017/tictactoe"

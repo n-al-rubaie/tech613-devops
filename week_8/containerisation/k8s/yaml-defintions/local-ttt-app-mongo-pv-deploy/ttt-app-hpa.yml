@@ -1,0 +1,46 @@
+# Horizontal Pod Autoscaler API version
+apiVersion: autoscaling/v2
+
+# Resource type
+kind: HorizontalPodAutoscaler
+
+# HPA metadata
+metadata:
+  # Name of the autoscaler
+  name: ttt-app-hpa
+
+# HPA specification
+spec:
+  # Target deployment that will be scaled automatically
+  scaleTargetRef:
+    # API version of the target resource
+    apiVersion: apps/v1
+
+    # Resource type to scale
+    kind: Deployment
+
+    # Name of the deployment to scale
+    name: ttt-app-deployment
+
+  # Minimum number of pod replicas to maintain
+  minReplicas: 2
+
+  # Maximum number of pod replicas allowed
+  maxReplicas: 10
+
+  # Metrics used to determine when scaling should occur
+  metrics:
+    # Use a resource metric for scaling
+    - type: Resource
+
+      resource:
+        # Monitor CPU utilisation
+        name: cpu
+
+        target:
+          # Scale based on average CPU utilisation across pods
+          type: Utilization
+
+          # Target CPU utilisation percentage
+          # If average CPU usage exceeds 10%, Kubernetes can add more pods
+          averageUtilization: 10
