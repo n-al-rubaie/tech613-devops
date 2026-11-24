@@ -1,3 +1,9 @@
+## Contents
+
+1. [Kubernetes Deployment of the NodeJS TTT App](#k8s-deployment-of-nodejs-ttt-app)
+2. [Two-Tier Deployment with MongoDB and Persistent Storage](#2-tier-deployment-with-pv-for-database)
+3. [Scaling the App with HPA](#using-horizontal-pod-autoscaler-hpa-to-scale-the-app)
+
 # K8s deployment of NodeJS TTT app
 
 ![alt text](architecture-diagram-updated.png)
