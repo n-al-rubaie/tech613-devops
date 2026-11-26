@@ -34,6 +34,8 @@ This project uses **three EC2 instances**:
 
 ## Pipeline Architecture
 
+![alt text](image-51.png)
+
 ```text
 GitHub
    ↓
