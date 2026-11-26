@@ -75,12 +75,17 @@ This repository documents my learning journey through DevOps, covering practical
 - [Nginx Deployment](week_8/containerisation/k8s/yaml-defintions/local_nginx_deploy/readme/nginx_deploy/nginx-deploy.md)
 - Local Tic-Tac-Toe and MongoDB deployment YAML definitions are available in the `week_8/containerisation/k8s/yaml-defintions/` directory.
 
+
+### Week 9 – Microsoft Azure
+
+- [2-Tier Deployment on Azure](week_9/azure/azure.md) – A two-tier application architecture on Microsoft Azure using separate application and database virtual machines. 
+
 ## Technologies and Tools
 
 - **Programming:** Python, JavaScript, SQL
 - **Version Control:** Git, GitHub
 - **Operating Systems:** Linux, Ubuntu
-- **Cloud:** AWS, EC2, S3, VPC, Auto Scaling
+- **Cloud:** AWS, EC2, S3, VPC, Auto Scaling, Azure
 - **Infrastructure as Code:** Terraform, Ansible
 - **CI/CD:** Jenkins
 - **Containerisation:** Docker, Docker Compose
