@@ -3,7 +3,7 @@
 
 Objective:
 
-A repeat of your the two-tier Tic-Tac-Toe deployment (app and database), but this time on Azure in UK South region, with the app connected to MongoDB and Nginx working as the reverse proxy.
+A repeat of the two-tier Tic-Tac-Toe deployment (app and database), but this time on Azure in UK South region, with the app connected to MongoDB and Nginx working as the reverse proxy.
 
 ## To be deployed
 ### Public subnet: App VM
@@ -19,6 +19,11 @@ A repeat of your the two-tier Tic-Tac-Toe deployment (app and database), but thi
 - Standard_B1s
 - MongoDB
 - Port 27017 accessible from the app VM, not exposed to the internet
+
+
+## Deployment Diagram
+
+![alt text](image-43.png)
 
 ## Generate a separate SSH key for Azure
 
